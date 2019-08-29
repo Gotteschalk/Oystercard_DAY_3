@@ -2,6 +2,7 @@ require "oystercard"
 
 describe Oystercard do
   let (:entry_station) { double :entry_station }
+  let (:exit_station) { double :exit_station }
 
   it { is_expected.to respond_to(:top_up).with(1).argument }
   # it { is_expected.to respond_to(:deduct).with(1).argument }
@@ -41,7 +42,7 @@ describe Oystercard do
         it "is not in_journey when an oystercard has been touched out" do
           subject.top_up(1)
           subject.touch_in(entry_station)
-          subject.touch_out
+          subject.touch_out(exit_station)
           expect(subject).not_to be_in_journey
         end
       end
@@ -63,15 +64,19 @@ describe Oystercard do
       it "reduces the balance by the cost of the journey upon touching-out" do
         subject.top_up(1)
         subject.touch_in(entry_station)
-        expect { subject.touch_out }.to change{subject.balance}.by(- Oystercard::FARE)
+        expect { subject.touch_out(exit_station) }.to change{subject.balance}.by(- Oystercard::FARE)
       end
     end
     it "returns nil for entry_station when you touch out" do
       subject.top_up(1)
       subject.touch_in(entry_station)
-      subject.touch_out
+      subject.touch_out(exit_station)
       expect( subject.entry_station ).to be_nil
     end
+  end
+
+  it "returns the exit station when you touch out" do
+    expect(subject.touch_out(exit_station)).to eq(subject.exit_station)
   end
 
 end
