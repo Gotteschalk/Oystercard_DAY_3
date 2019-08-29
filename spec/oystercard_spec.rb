@@ -66,7 +66,7 @@ describe Oystercard do
         expect { subject.touch_out }.to change{subject.balance}.by(- Oystercard::FARE)
       end
     end
-    it "returns nill for entry_station when you touch out" do
+    it "returns nil for entry_station when you touch out" do
       subject.top_up(1)
       subject.touch_in(entry_station)
       subject.touch_out
